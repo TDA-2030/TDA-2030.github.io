@@ -15,16 +15,16 @@
 <meta property="og:site_name" content="BLOG SITE">
 <meta property="og:description" content="查找 RTSP 协议中的 G711 编码过程中得到的文章，觉得有点用就翻译了一下。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522122732407.png">
-<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522123228276.png">
-<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522125312130.png">
-<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522125837743.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522123228276.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522125312130.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522125837743.png">
 <meta property="article:published_time" content="2021-05-22T05:17:57.000Z">
-<meta property="article:modified_time" content="2021-05-22T05:21:10.226Z">
+<meta property="article:modified_time" content="2021-05-22T05:27:41.270Z">
 <meta property="article:author" content="TDA2030">
 <meta property="article:tag" content="技术">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tda-2030.github.io/2021/05/22/image-20210522122732407.png">
+<meta name="twitter:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png">
   
     <link rel="alternative" href="/atom.xml" title="BLOG SITE" type="application/atom+xml">
   
@@ -198,27 +198,27 @@
 <p>压缩是一种简单的系统，信息首先被压缩，通过带宽有限的信道传输，然后在接收端扩展。通过将13位码字减少到8位码字，它经常被用来降低传输电话质量语音的带宽要求。两种将信号数据编码为8位码的国际标准是a律和μ律。A-law是欧洲的公认标准，μ-law是美国和日本的公认标准。</p>
 <h2 id="Speech-Companding"><a href="#Speech-Companding" class="headerlink" title="Speech Companding"></a>Speech Companding</h2><p>人类的听觉系统被认为是一个对数过程，在这个过程中，高振幅声音不需要像低振幅声音一样的分辨率。人耳对小信号的量化噪声比大信号的量化噪声更敏感。A -law 和 μ-law 编码使用对数量化函数来根据输入信号的水平比例调整数据分辨率。较小的信号比较大的信号具有更高的精度和更多的数据位。结果是每个样本的比特数更少，以保持一个可听的信噪比(SNR)。</p>
 <p>A -law/μ-law PCM 不是直接对线性输入数据取对数，这在计算上很困难，而是用分段线性逼近来匹配对数曲线。沿着曲线的八个直线段产生一个接近对数函数的近似。每一个片段被称为和弦。在每个和弦中，分段线性近似被分为大小相等的量化间隔，称为步长。相邻码字之间的步长在每个和弦中增加一倍。原始整数的符号位也被编码。结果是一个由1位符号位、3位和弦和4位步长组成的8位对数代码。</p>
-<h3 id="A-Law-Compander"><a href="#A-Law-Compander" class="headerlink" title="A-Law Compander"></a>A-Law Compander</h3><p>A-law 是 CCITT 推荐的全欧洲使用的压缩标准。将线性采样值限制为12个量级位，A-law 压缩由公式1定义，其中A为压缩参数(欧洲为A=87.7)， x 为需要压缩的归一化整数。<br>$$<br>F(x)=\left[\begin{array}{ll}<br>\frac{A^{<em>}|x|}{1+\ln \mid A} &amp; 0 \leqslant|x|&lt;\frac{1}{A} \<br>\frac{\operatorname{sgn}(x)^{</em>}(1+\ln (A|x|))}{1+\ln (A)} &amp; \frac{1}{A} \leqslant|x| \leqslant 1<br>\end{array}\right. \<br>\text { 公式1, A-Law 定义 }<br>$$<br>表1给出了 A-law 编码表。线性输入数据的符号位从表中省略。如果输入样本为负，则8位代码的符号位(S)设置为1，如果输入样本为正，则设置为0。</p>
-<p><img src="/2021/05/22/image-20210522122732407.png" alt="image-20210522122732407"></p>
+<h3 id="A-Law-Compander"><a href="#A-Law-Compander" class="headerlink" title="A-Law Compander"></a>A-Law Compander</h3><p>A-law 是 CCITT 推荐的全欧洲使用的压缩标准。将线性采样值限制为12个量级位，A-law 压缩由公式1定义，其中A为压缩参数(欧洲为A=87.7)， x 为需要压缩的归一化整数。</p>
+<p>$$<br>F(x)=\left[\begin{array}{ll}<br>\frac{A^{<em>}|x|}{1+\ln \mid A} &amp; 0 \leqslant|x|&lt;\frac{1}{A} \<br>\frac{\operatorname{sgn}(x)^{</em>}(1+\ln (A|x|))}{1+\ln (A)} &amp; \frac{1}{A} \leqslant|x| \leqslant 1<br>\end{array}\right. \<br>\text { 公式1, A-Law 定义 }<br>$$</p>
+<p>表1给出了 A-law 编码表。线性输入数据的符号位从表中省略。如果输入样本为负，则8位代码的符号位(S)设置为1，如果输入样本为正，则设置为0。</p>
+<p><img src="2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png" alt="image-20210522122732407"></p>
 <p>通过表中定义的逻辑对输入数据进行编码后，对8位码应用翻转模式，以增加传输线上的传输密度，从而提高硬件性能。翻转模式是通过用 0x55 异或处理8位码来实现的。</p>
 <p>解码 A-law 编码的数据本质上是一个反向编码步骤的问题。表2给出了翻转模式后应用的A-law解码表。编码过程中丢弃的最低有效位近似于间隔的中值。这在输出部分中以 <code>1..0</code> 形式尾随在D位后。</p>
-<p><img src="/2021/05/22/image-20210522123228276.png" alt="image-20210522123228276"></p>
-<h3 id="μ-Law-Compander"><a href="#μ-Law-Compander" class="headerlink" title="μ-Law Compander"></a>μ-Law Compander</h3><p>美国和日本采用μ法压缩。将线性样本值限制为13个量级位，μ律压缩由公式2定义，其中μ是压缩参数(美国和日本的μ =255)， x 是要压缩的归一化整数。<br>$$<br>F(x)=\frac{\left.\operatorname{sgn}(x)^{*} \ln (1+\mu|x|)\right)}{\ln (1+\mu)} \quad 0 \leqslant|x| \leqslant 1 \<br>\text{公式2，μ-Law 定义}<br>$$<br>μ-Law 的编码和译码过程与 A-law 相似。然而，有一些显著的区别:</p>
+<p><img src="2021/05/22/ALaw_and_MuLaw_Companding/image-20210522123228276.png" alt="image-20210522123228276"></p>
+<h3 id="μ-Law-Compander"><a href="#μ-Law-Compander" class="headerlink" title="μ-Law Compander"></a>μ-Law Compander</h3><p>美国和日本采用μ法压缩。将线性样本值限制为13个量级位，μ律压缩由公式2定义，其中μ是压缩参数(美国和日本的μ =255)， x 是要压缩的归一化整数。</p>
+<p>$$<br>F(x)=\frac{\left.\operatorname{sgn}(x)^{*} \ln (1+\mu|x|)\right)}{\ln (1+\mu)} \quad 0 \leqslant|x| \leqslant 1 \<br>\text{公式2，μ-Law 定义}<br>$$</p>
+<p>μ-Law 的编码和译码过程与 A-law 相似。然而，有一些显著的区别:</p>
 <ol>
-<li><p>μ-law 编码器通常对线性13位幅度数据进行操作，而不是 A-law 的12位幅度数据</p>
-</li>
-<li><p>在弦确定之前，将偏置值33添加到线性输入数据的绝对值中，以简化弦和步长计算</p>
-</li>
-<li><p>符号位的定义是反过来的</p>
-</li>
-<li><p>翻转模式应用在8位码中的所有位</p>
-</li>
+<li>μ-law 编码器通常对线性13位幅度数据进行操作，而不是 A-law 的12位幅度数据</li>
+<li>在弦确定之前，将偏置值33添加到线性输入数据的绝对值中，以简化弦和步长计算</li>
+<li>符号位的定义是反过来的</li>
+<li>翻转模式应用在8位码中的所有位</li>
 </ol>
 <p>表3展示了 μ-law 编码表。线性输入数据的符号位从表中省略。如果输入样本为正，则8位代码的符号位(S)设置为1，如果输入样本为负，则设置为0。</p>
-<p><img src="/2021/05/22/image-20210522125312130.png" alt="image-20210522125312130"></p>
+<p><img src="2021/05/22/ALaw_and_MuLaw_Companding/image-20210522125312130.png" alt="image-20210522125312130"></p>
 <p>通过表中定义的逻辑对输入数据进行编码后，对8位码应用翻转模式，以增加传输线上的传输密度，从而提高硬件性能。用 0xFF 对8位码进行异或运算，从而实现翻转模式。</p>
 <p>解码 μ-Law 编码的数据本质上是反向编码步骤的问题。表4给出了翻转模式后应用的 μ-Law 译码表。编码过程中丢弃的最低有效位近似于间隔的中值。这在输出部分中以 <code>1..0</code> 形式尾随在D位后。</p>
-<p><img src="/2021/05/22/image-20210522125837743.png" alt="image-20210522125837743"></p>
+<p><img src="2021/05/22/ALaw_and_MuLaw_Companding/image-20210522125837743.png" alt="image-20210522125837743"></p>
 <h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>有大量的音频传输系统采用 A-Law 和/或 μ-Law 压缩来降低数据速率同时有良好的音频质量。通过 A-law 和 μ-law 编码实现的压缩是利用人类听觉系统的对数特性的结果，在这种特性中，对较大的信号所需的精度比特数比较小的信号所需的精度比特数少。对数传递函数由一个符号位、一个3位和弦和一个4位段组成的分段线性逼近来实现。编码和解码过程以表格格式表示，非常适合于硬件或软件实现。</p>
 
       
