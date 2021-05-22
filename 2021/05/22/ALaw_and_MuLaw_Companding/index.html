@@ -6,22 +6,25 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://tda-2030.github.io">
-  <title>AVI 视频文件格式解析 | BLOG SITE</title>
+  <title>A 律和 μ 律压缩 | BLOG SITE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近突发奇想研究了一下视频播放，听说 AVI 视频文件较简单，找到了一篇古老的英文文档，翻译后供自己看。">
+  <meta name="description" content="查找 RTSP 协议中的 G711 编码过程中得到的文章，觉得有点用就翻译了一下。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AVI 视频文件格式解析">
-<meta property="og:url" content="https://tda-2030.github.io/2021/01/22/avi-format-analyse/index.html">
+<meta property="og:title" content="A 律和 μ 律压缩">
+<meta property="og:url" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/index.html">
 <meta property="og:site_name" content="BLOG SITE">
-<meta property="og:description" content="最近突发奇想研究了一下视频播放，听说 AVI 视频文件较简单，找到了一篇古老的英文文档，翻译后供自己看。">
+<meta property="og:description" content="查找 RTSP 协议中的 G711 编码过程中得到的文章，觉得有点用就翻译了一下。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://tda-2030.github.io/2021/01/22/avi-format-analyse/header.jpg">
-<meta property="article:published_time" content="2021-01-22T15:30:19.000Z">
-<meta property="article:modified_time" content="2021-04-12T16:05:03.391Z">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522122732407.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522123228276.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522125312130.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/image-20210522125837743.png">
+<meta property="article:published_time" content="2021-05-22T05:17:57.000Z">
+<meta property="article:modified_time" content="2021-05-22T05:21:10.226Z">
 <meta property="article:author" content="TDA2030">
 <meta property="article:tag" content="技术">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tda-2030.github.io/2021/01/22/avi-format-analyse/header.jpg">
+<meta name="twitter:image" content="https://tda-2030.github.io/2021/05/22/image-20210522122732407.png">
   
     <link rel="alternative" href="/atom.xml" title="BLOG SITE" type="application/atom+xml">
   
@@ -157,20 +160,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-avi-format-analyse" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-ALaw_and_MuLaw_Companding" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      AVI 视频文件格式解析
+      A 律和 μ 律压缩
     </h1>
   
 
         
-        <a href="/2021/01/22/avi-format-analyse/" class="archive-article-date">
-  	<time datetime="2021-01-22T15:30:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-22</time>
+        <a href="/2021/05/22/ALaw_and_MuLaw_Companding/" class="archive-article-date">
+  	<time datetime="2021-05-22T05:17:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-05-22</time>
 </a>
         
         <!-- 添加代码 -->
@@ -184,152 +187,39 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近突发奇想研究了一下视频播放，听说 AVI 视频文件较简单，找到了一篇古老的英文文档，翻译后供自己看。</p>
+        <p>查找 RTSP 协议中的 G711 编码过程中得到的文章，觉得有点用就翻译了一下。</p>
 <a id="more"></a>
 
-<p>原文链接：<a href="https://web.archive.org/web/20170411001412/http://www.alexander-noe.com/video/documentation/avi.pdf" target="_blank" rel="noopener">https://web.archive.org/web/20170411001412/http://www.alexander-noe.com/video/documentation/avi.pdf</a></p>
-<h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1 introduction"></a>1 introduction</h2><h3 id="1-1-为什么要这一个AVI文件格式文档"><a href="#1-1-为什么要这一个AVI文件格式文档" class="headerlink" title="1.1 为什么要这一个AVI文件格式文档"></a>1.1 为什么要这一个AVI文件格式文档</h3><p>​    尽管AVI文件格式已经存在了10多年，但是没有一个文档不仅描述了格式本身，而且还说明了有缺陷的 demuxer 和 decoder 的问题，以及如何规避这些问题。</p>
-<p>​    本文档的目的不仅仅是解释AVI格式，就像文章中定义的那样，而是在使用有缺陷的 muxers、demuxer、decompressor 时如何使用它。</p>
-<h3 id="1-2-基本数据结构"><a href="#1-2-基本数据结构" class="headerlink" title="1.2 基本数据结构"></a>1.2 基本数据结构</h3><h4 id="1-2-1-Chunks"><a href="#1-2-1-Chunks" class="headerlink" title="1.2.1 Chunks"></a>1.2.1 Chunks</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    DWORD dwFourCC</span><br><span class="line">    DWORD dwSize</span><br><span class="line">    BYTE  data[dwSize] <span class="comment">// contains headers or video/audio data</span></span><br><span class="line">&#125;CHUNK;</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-2-2-Lists"><a href="#1-2-2-Lists" class="headerlink" title="1.2.2 Lists"></a>1.2.2 Lists</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    DWORD dwList</span><br><span class="line">    DWORD dwSize</span><br><span class="line">    DWORD dwFourCC</span><br><span class="line">    BYTE  data[dwSize<span class="number">-4</span>] <span class="comment">//contains Lists and Chunks</span></span><br><span class="line">&#125;LIST;</span><br></pre></td></tr></table></figure>
-
-<p>一个 chunk 包含视频、音频或字幕数据，使用 dwFourCC 中包含的 2 个十六进制数字指定流编号，2个字母指定数据类型（dc = 视频，wb = 音频， tx = 文本）。dwFourCC 和 dwSize 在两种结构中的意思相同，dwFourCC 描述了 chunk 的类型（例如 “header list” 是 “hdrl”），dwSize 是 chunk 或 list 的大小，包括了 dwSize 后的第一个字节。在 list 结构中，dwSize 包括了 dwFourCC  的 4 字节。</p>
-<p>dwList 的值可以是 “RIFF” (RIFF-List) 或 “LIST” (List)。</p>
-<p>注：FourCC : four character code</p>
-<h3 id="1-3-AVI-文件类型"><a href="#1-3-AVI-文件类型" class="headerlink" title="1.3 AVI 文件类型"></a>1.3 AVI 文件类型</h3><p>通常有三种类型的 AVI 文件：</p>
-<ul>
-<li><strong>AVI 1.0</strong> 原始的，老的 AVI 文件</li>
-<li><strong>Open-DML</strong> 一个 AVI 文件格式的扩展，在 1996.2.28 制定了 V1.02 版本，最重要的改进是：<ul>
-<li>几乎不限制文件大小（超过了 NTFS 允许的大小）</li>
-<li>开销减少 33%</li>
-</ul>
+<h1 id="A-Law-Mu-Law-Companding"><a href="#A-Law-Mu-Law-Companding" class="headerlink" title="A-Law/Mu-Law Companding"></a>A-Law/Mu-Law Companding</h1><p>原文：<a href="http://www.young-engineering.com/docs/YoungEngineering_ALaw_and_MuLaw_Companding.pdf" target="_blank" rel="noopener">http://www.young-engineering.com/docs/YoungEngineering_ALaw_and_MuLaw_Companding.pdf</a></p>
+<blockquote>
+<p>译者注：compand = compress + expand</p>
+</blockquote>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>脉冲编码调制(PCM)是一种将模拟波形数字化或量化的常用方法。对于任何模数转换过程，量化步骤使用数字码字产生对波形样本的估计。由于可用的比特数有限，这种数字估计内在地包含某种程度的误差。在实际中，误差的大小和数字数据样本的大小之间总是有一个折衷。任何系统设计的目标都是将数据量化为最小位数并达到可容忍的错误水平。在语音编码的情况下，以8 KHz采样的13位线性量化是准确产生全范围语音信号的数字表示的最低要求。对于许多传输系统，有线或无线，就带宽而言，13位采样在8KHz是一个奢侈的要求。为了解决这一限制，通常使用压缩(Companding)系统。</p>
+<p>压缩是一种简单的系统，信息首先被压缩，通过带宽有限的信道传输，然后在接收端扩展。通过将13位码字减少到8位码字，它经常被用来降低传输电话质量语音的带宽要求。两种将信号数据编码为8位码的国际标准是a律和μ律。A-law是欧洲的公认标准，μ-law是美国和日本的公认标准。</p>
+<h2 id="Speech-Companding"><a href="#Speech-Companding" class="headerlink" title="Speech Companding"></a>Speech Companding</h2><p>人类的听觉系统被认为是一个对数过程，在这个过程中，高振幅声音不需要像低振幅声音一样的分辨率。人耳对小信号的量化噪声比大信号的量化噪声更敏感。A -law 和 μ-law 编码使用对数量化函数来根据输入信号的水平比例调整数据分辨率。较小的信号比较大的信号具有更高的精度和更多的数据位。结果是每个样本的比特数更少，以保持一个可听的信噪比(SNR)。</p>
+<p>A -law/μ-law PCM 不是直接对线性输入数据取对数，这在计算上很困难，而是用分段线性逼近来匹配对数曲线。沿着曲线的八个直线段产生一个接近对数函数的近似。每一个片段被称为和弦。在每个和弦中，分段线性近似被分为大小相等的量化间隔，称为步长。相邻码字之间的步长在每个和弦中增加一倍。原始整数的符号位也被编码。结果是一个由1位符号位、3位和弦和4位步长组成的8位对数代码。</p>
+<h3 id="A-Law-Compander"><a href="#A-Law-Compander" class="headerlink" title="A-Law Compander"></a>A-Law Compander</h3><p>A-law 是 CCITT 推荐的全欧洲使用的压缩标准。将线性采样值限制为12个量级位，A-law 压缩由公式1定义，其中A为压缩参数(欧洲为A=87.7)， x 为需要压缩的归一化整数。<br>$$<br>F(x)=\left[\begin{array}{ll}<br>\frac{A^{<em>}|x|}{1+\ln \mid A} &amp; 0 \leqslant|x|&lt;\frac{1}{A} \<br>\frac{\operatorname{sgn}(x)^{</em>}(1+\ln (A|x|))}{1+\ln (A)} &amp; \frac{1}{A} \leqslant|x| \leqslant 1<br>\end{array}\right. \<br>\text { 公式1, A-Law 定义 }<br>$$<br>表1给出了 A-law 编码表。线性输入数据的符号位从表中省略。如果输入样本为负，则8位代码的符号位(S)设置为1，如果输入样本为正，则设置为0。</p>
+<p><img src="/2021/05/22/image-20210522122732407.png" alt="image-20210522122732407"></p>
+<p>通过表中定义的逻辑对输入数据进行编码后，对8位码应用翻转模式，以增加传输线上的传输密度，从而提高硬件性能。翻转模式是通过用 0x55 异或处理8位码来实现的。</p>
+<p>解码 A-law 编码的数据本质上是一个反向编码步骤的问题。表2给出了翻转模式后应用的A-law解码表。编码过程中丢弃的最低有效位近似于间隔的中值。这在输出部分中以 <code>1..0</code> 形式尾随在D位后。</p>
+<p><img src="/2021/05/22/image-20210522123228276.png" alt="image-20210522123228276"></p>
+<h3 id="μ-Law-Compander"><a href="#μ-Law-Compander" class="headerlink" title="μ-Law Compander"></a>μ-Law Compander</h3><p>美国和日本采用μ法压缩。将线性样本值限制为13个量级位，μ律压缩由公式2定义，其中μ是压缩参数(美国和日本的μ =255)， x 是要压缩的归一化整数。<br>$$<br>F(x)=\frac{\left.\operatorname{sgn}(x)^{*} \ln (1+\mu|x|)\right)}{\ln (1+\mu)} \quad 0 \leqslant|x| \leqslant 1 \<br>\text{公式2，μ-Law 定义}<br>$$<br>μ-Law 的编码和译码过程与 A-law 相似。然而，有一些显著的区别:</p>
+<ol>
+<li><p>μ-law 编码器通常对线性13位幅度数据进行操作，而不是 A-law 的12位幅度数据</p>
 </li>
-<li><strong>Hybride-Files</strong> Open-DML 文件为了兼容性，包含了一个额外的索引。这不是一个官方的词，但是它很好的描述了文件类型。仅包含一个 RIFF List 的 Hybride files 可以视为任意一种文件类型。</li>
-</ul>
-<p>本文档描述了 Open-DML 1.02 文件格式特性的子集，以及一些附加功能(“hacks”)。如果安装了适当的(免费可用的)过滤器，这些附加功能将在普通播放器中使用。在 Open-DML 中可用，但在 AVI 1.0 中不可用的特性，将被指示为仅 Open-DML。</p>
-<h2 id="2-AVI-文件的布局"><a href="#2-AVI-文件的布局" class="headerlink" title="2 AVI 文件的布局"></a>2 AVI 文件的布局</h2><p>当一个 RIFF-List 的 dwFourCC 是 “AVI ” 时被称为 RIFF-AVI-List，当一个 RIFF-List 的 dwFourCC 是 “AVIX” 时被称为 RIFF-AVIX-List。</p>
-<p>每一个 AVI 文件都有如下的布局：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RIFF AVI      &#x2F;&#x2F; mandatory</span><br><span class="line">&#123; RIFF AVIX &#125; &#x2F;&#x2F; only for Open-DML files</span><br></pre></td></tr></table></figure>
-
-<p>这些 List 的大小不是 uint32_t 的最大值 4GB，而是：</p>
-<ul>
-<li>对于 AVI 1.0：size(RIFF-AVI) &lt; 2GB</li>
-<li>对于 Open-DML：<ul>
-<li>size(RIFF-AVI) &lt; 1GB (某些 muxing 软件是 2GB)</li>
-<li>size(RIFF-AVIX) &lt; 2GB</li>
-</ul>
+<li><p>在弦确定之前，将偏置值33添加到线性输入数据的绝对值中，以简化弦和步长计算</p>
 </li>
-</ul>
-<p>如果没有找到 Legacy index，Windows XP 总是把第一个 RIFF AVI List 整个读取，这个 Legacy index 会导致一定的开销，所以推荐尽可能创建一个小的 RIFF AVI List。</p>
-<h3 id="2-1-Header"><a href="#2-1-Header" class="headerlink" title="2.1 Header"></a>2.1 Header</h3><p>AVI 文件的 Header 看起来是这样：</p>
-<img src="/2021/01/22/avi-format-analyse/header.jpg" alt="header" width="700" />
-
-<p>接下来说明这些 header 和 chunk 的意思。</p>
-<h4 id="2-1-1-MainAVIHeader-avih"><a href="#2-1-1-MainAVIHeader-avih" class="headerlink" title="2.1.1 MainAVIHeader(avih)"></a>2.1.1 MainAVIHeader(avih)</h4><p>这个结构定义如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD  dwMicroSecPerFrame;   <span class="comment">//  frame  display  rate  (or  0)</span></span><br><span class="line">    DWORD  dwMaxBytesPerSec;     <span class="comment">//  max.  transfer  rate</span></span><br><span class="line">    DWORD  dwPaddingGranularity; <span class="comment">//  pad  to  multiples  of  this size;</span></span><br><span class="line">    DWORD  dwFlags;              <span class="comment">//  the  ever-present  flags</span></span><br><span class="line">    DWORD  dwTotalFrames;        <span class="comment">//  #  frames  in  file</span></span><br><span class="line">    DWORD  dwInitialFrames;</span><br><span class="line">    DWORD  dwStreams;</span><br><span class="line">    DWORD  dwSuggestedBufferSize;</span><br><span class="line">    DWORD  dwWidth;</span><br><span class="line">    DWORD  dwHeight;</span><br><span class="line">    DWORD  dwReserved[<span class="number">4</span>];</span><br><span class="line">&#125;  MainAVIHeader;</span><br></pre></td></tr></table></figure>
-
-<p>不幸的是，这些值没有它们的名字看上去的那种意思。</p>
-<ul>
-<li><p>dwMicroSecPerFrame</p>
-<p>包含一个视频帧的时间，以 us 为时间。这个值可以忽略，但是任何 AVI 文件都应该正确的填入该值。<strong>重要</strong>：一些坏的软件将帧率写入到 stream header 而不是 dwMicroSecPerFrame 。因此 dwMicroSecPerFrame 是不可信的。</p>
+<li><p>符号位的定义是反过来的</p>
 </li>
-<li><p>dwMaxBytesPerSec</p>
-<p>文件的最大数据率。这个也不是不重要，只是不应该过高的估计重要性</p>
+<li><p>翻转模式应用在8位码中的所有位</p>
 </li>
-<li><p>dwPaddingGranularity</p>
-<p>文件被填充为这个的倍数</p>
-</li>
-<li><p>dwFlags</p>
-<p>see below</p>
-</li>
-<li><p>dwTotalFrames</p>
-<p>包含 RIFF-AVI List 中视频的帧数（在 RIFF-AVIX-List 中，不是整个文件的帧数。一些声称可以处理AVI文件的工具甚至会假设这一点，但它肯定违反了opendml文件格式规范。）鉴于一些 AVI 文件 muxer 在这写入错误的值，这个值也变得不可信。</p>
-</li>
-<li><p>dwInitialFrames</p>
-<p>忽略这个</p>
-</li>
-<li><p>dwStreams</p>
-<p>文件中 stream 的数量</p>
-</li>
-<li><p>dwSuggestedBufferSize</p>
-<p>装载这个文件中chunk的buffer大小。这个值的可信度不可高估</p>
-</li>
-<li><p>dwWidth</p>
-<p>视频流的宽度</p>
-</li>
-<li><p>dwHeight</p>
-<p>视频流的高度</p>
-</li>
-</ul>
-<p>MainAVIHeader 中可用的 flags：</p>
-<ul>
-<li>AVIF_HASINDEX  ：文件中有一个 index</li>
-<li>AVIF_MUSTUSEINDEX  ： 视频和音频块播放的顺序必须由 index 确定，并且可能不同于这些块在文件中出现的顺序。</li>
-<li>AVIF_ISINTERLEAVED ：这些 stream 适当地交织在一起</li>
-<li>AVIF_WASCAPTUREFILE ：The file was captured. The interleave might be weird</li>
-<li>AVIF_COPYRIGHTED ： 忽略</li>
-<li>AVIF_TRUSTCKTYPE ：只有 Open-DML 才有，这个 flag 表明了在 index 中的关键帧标记是可信的。如果在 Open-DML 文件中没有这个flag，则关键帧标志可能有缺陷，但技术上不会使文件无效。</li>
-</ul>
-<h4 id="2-1-2-Stream-Header-list-strl"><a href="#2-1-2-Stream-Header-list-strl" class="headerlink" title="2.1.2 Stream Header list (strl)"></a>2.1.2 Stream Header list (strl)</h4><p>每一个 stream 都有一个 strl 。如果在 hdrl 中 strl 的数量与 MainAVIHeader 中 streams 字段的值不相等，则应该报一个 fatal error。</p>
-<h4 id="2-1-3-stream-header-chunk"><a href="#2-1-3-stream-header-chunk" class="headerlink" title="2.1.3 stream header chunk"></a>2.1.3 stream header chunk</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    FOURCC  fccType;</span><br><span class="line">    FOURCC  fccHandler;</span><br><span class="line">    DWORD   dwFlags;</span><br><span class="line">    WORD    wPriority;</span><br><span class="line">    WORD    wLanguage;</span><br><span class="line">    DWORD   dwInitialFrames;</span><br><span class="line">    DWORD   dwScale;</span><br><span class="line">    DWORD   dwRate; <span class="comment">/* dwRate / dwScale = fps */</span></span><br><span class="line">    DWORD   dwStart;</span><br><span class="line">    DWORD   dwLength;        <span class="comment">/* In units above... */</span></span><br><span class="line">    DWORD   dwSuggestedBufferSize;</span><br><span class="line">    DWORD   dwQuality;</span><br><span class="line">    DWORD   dwSampleSize;</span><br><span class="line">    RECT    rcFrame;</span><br><span class="line">&#125; AVIStreamHeader;</span><br></pre></td></tr></table></figure>
-
-<p>同样的，这些值的意思也不总是明显的。</p>
-<ul>
-<li><p>fccType 可以是 <code>vids</code> ， <code>auds</code> ， <code>txts</code> 依次代表 视频流，音频流， 字幕流</p>
-</li>
-<li><p>fccHandler ：使用的编码器</p>
-</li>
-<li><p>dwFlags：</p>
-<ul>
-<li>AVISF_DISABLED ： stream 默认处于未激活状态</li>
-<li>AVISF_VIDEO_PALCHANGES ： stream 是一个使用调色板的视频流，并且调色板在播放时会改变。</li>
-</ul>
-</li>
-<li><p>dwInitialFrames ：文件中存在的流的第一个 chunk 的编号。</p>
-</li>
-<li><p>dwRate / dwScale = samples / second(audio) or frames  / second(video). dwScale 和 dwRate 应该互为素数，测试表明，使用10000000/400000 而不是 25/1 将导致某些硬件 MPEG4 播放器不工作。</p>
-</li>
-<li><p>dwStart ：stream的开始时间。如果是VBR音频，这个值指示了 stream 开始前的静音帧数量</p>
-</li>
-<li><p>dwLength ：以dwRate和dwScale中定义的单位表示的流大小</p>
-</li>
-<li><p>dwSuggestedBufferSize ：用来存储 stream 块的缓存大小。可以是0（这样应用程序必须靠猜），但是不应该是0，因为 Microsoft 的 AVI splitter 不能正确处理这种情况（例如 Open-DML 文件中的 MP3-CBR）</p>
-</li>
-<li><p>dwQuality ：指示 stream 的质量，不重要</p>
-</li>
-<li><p>dwSampleSize ：stream 中一个 atom 的字节数（不应进一步拆分）</p>
-</li>
-</ul>
-<h4 id="2-1-4-stream-header-list-strf"><a href="#2-1-4-stream-header-list-strf" class="headerlink" title="2.1.4 stream header list (strf)"></a>2.1.4 stream header list (strf)</h4><p>strf 块的结构依赖于媒体的类型。视频流使用 BITMAPINFOHEADER 结构，音频流使用 WAVEFORMATEX 结构</p>
-<h4 id="2-1-5-stream-header-list-index"><a href="#2-1-5-stream-header-list-index" class="headerlink" title="2.1.5 stream header list (index)"></a>2.1.5 stream header list (index)</h4><p>这个块包含更高级别的索引，见第3章</p>
-<h4 id="2-1-6-stream-header-list-strn"><a href="#2-1-6-stream-header-list-strn" class="headerlink" title="2.1.6 stream header list (strn)"></a>2.1.6 stream header list (strn)</h4><p>这个块包含流的名字，该名字应该仅使用简单的 ASCII，尤其不能是UTF-8</p>
-<h2 id="3-AVI-indexes"><a href="#3-AVI-indexes" class="headerlink" title="3 AVI indexes"></a>3 AVI indexes</h2><h3 id="3-1-旧风格的索引"><a href="#3-1-旧风格的索引" class="headerlink" title="3.1 旧风格的索引"></a>3.1 旧风格的索引</h3><p>所描述的索引是你将在 AVI1.0 文件中找到的索引。它放在 RIFF AVI List 的 movi List 之后。idx1块的数据部分具有以下布局：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">AVIINDEXENTRY index_entry[n]</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD      ckid;</span><br><span class="line">    DWORD      dwFlags;</span><br><span class="line">    DWORD      dwChunkOffset;</span><br><span class="line">    DWORD      dwChunkLength;</span><br><span class="line">&#125;AVIINDEXENTRY;</span><br></pre></td></tr></table></figure>
-
-<p>这些值的意思如下：</p>
-<ul>
-<li><p>ckid ：规定与文件中数据块的 chunkID 相对应的 FourCC</p>
-</li>
-<li><p>dwFlags ：</p>
-<p>以下flag被定义：</p>
-<ul>
-<li>AVIIF_KEYFRAME ：指向的块是一个关键帧</li>
-<li>AVIIF_LIST ：指向一个List 而不是块</li>
-<li>AVIIF_FIRSTPART ：指示此块需要使用它后面的帧；它不能独立</li>
-<li>AVIIF_LASTPART ：指示此块需要使用它前面的帧；它不能独立</li>
-<li>AVIIF_NOTIME ：应用于相应区块的持续时间为0</li>
-</ul>
-</li>
-</ul>
-<p>如果 AVIIF_FIRSTPART 和 AVIIF_LASTPART 都没有设置，这个块可以独立，换言之，它是对应流的至少一个分组。这对于在 AVI 文件中存储 VBR 音频流非常重要（参见第5.4章）</p>
-<ul>
-<li>dwChunkOffset ：包含相应块的头位置。<strong>警告</strong>：这可以是文件的绝对位置，也可以是相对 movi 标识符的相对位置，AVI 文件解析器必须能处理这两种情况。</li>
-<li>dwChunkLength ： 对应块的字节长度</li>
-</ul>
-<h3 id="3-2-Open-DML-Index"><a href="#3-2-Open-DML-Index" class="headerlink" title="3.2 Open-DML Index"></a>3.2 Open-DML Index</h3><p>Open-DML 索引块的通常结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">aviindex_chunk</span> &#123;</span></span><br><span class="line">    FOURCC fcc;</span><br><span class="line">    DWORD  cb;</span><br><span class="line">    WORD   wLongsPerEntry;</span><br><span class="line">    BYTE   bIndexSubType;</span><br><span class="line">    BYTE   bIndexType;</span><br><span class="line">    DWORD  nEntriesInUse;</span><br><span class="line">    DWORD  dwChunkId;</span><br><span class="line">    DWORD  dwReserved[<span class="number">3</span>];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">aviindex_entry</span> &#123;</span></span><br><span class="line">        DWORD  adw[wLongsPerEntry];</span><br><span class="line">    &#125; aIndex [ ];</span><br><span class="line">&#125; AVIINDEXCHUNK;</span><br></pre></td></tr></table></figure>
-
+</ol>
+<p>表3展示了 μ-law 编码表。线性输入数据的符号位从表中省略。如果输入样本为正，则8位代码的符号位(S)设置为1，如果输入样本为负，则设置为0。</p>
+<p><img src="/2021/05/22/image-20210522125312130.png" alt="image-20210522125312130"></p>
+<p>通过表中定义的逻辑对输入数据进行编码后，对8位码应用翻转模式，以增加传输线上的传输密度，从而提高硬件性能。用 0xFF 对8位码进行异或运算，从而实现翻转模式。</p>
+<p>解码 μ-Law 编码的数据本质上是反向编码步骤的问题。表4给出了翻转模式后应用的 μ-Law 译码表。编码过程中丢弃的最低有效位近似于间隔的中值。这在输出部分中以 <code>1..0</code> 形式尾随在D位后。</p>
+<p><img src="/2021/05/22/image-20210522125837743.png" alt="image-20210522125837743"></p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>有大量的音频传输系统采用 A-Law 和/或 μ-Law 压缩来降低数据速率同时有良好的音频质量。通过 A-law 和 μ-law 编码实现的压缩是利用人类听觉系统的对数特性的结果，在这种特性中，对较大的信号所需的精度比特数比较小的信号所需的精度比特数少。对数传递函数由一个符号位、一个3位和弦和一个4位段组成的分段线性逼近来实现。编码和解码过程以表格格式表示，非常适合于硬件或软件实现。</p>
 
       
       <!-- 在此处添加代码-->
@@ -405,7 +295,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://tda-2030.github.io/2021/01/22/avi-format-analyse/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -419,18 +309,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2021/05/22/ALaw_and_MuLaw_Companding/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          A 律和 μ 律压缩
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/11/16/multilayer-pcb/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">PCB设计中的模拟地与数字地</div>
+    <a href="/2021/01/22/avi-format-analyse/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">AVI 视频文件格式解析</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -458,7 +339,7 @@
   
   <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="avi-format-analyse" data-title="AVI 视频文件格式解析" data-url="https://tda-2030.github.io/2021/01/22/avi-format-analyse/"></div>
+	<div class="ds-thread" data-thread-key="ALaw_and_MuLaw_Companding" data-title="A 律和 μ 律压缩" data-url="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
