@@ -15,16 +15,16 @@
 <meta property="og:site_name" content="BLOG SITE">
 <meta property="og:description" content="查找 RTSP 协议中的 G711 编码过程中得到的文章，觉得有点用就翻译了一下。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png">
+<meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png">
 <meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522123228276.png">
 <meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522125312130.png">
 <meta property="og:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522125837743.png">
 <meta property="article:published_time" content="2021-05-22T05:17:57.000Z">
-<meta property="article:modified_time" content="2021-05-22T05:27:41.270Z">
+<meta property="article:modified_time" content="2021-05-22T05:34:11.119Z">
 <meta property="article:author" content="TDA2030">
 <meta property="article:tag" content="技术">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png">
+<meta name="twitter:image" content="https://tda-2030.github.io/2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png">
   
     <link rel="alternative" href="/atom.xml" title="BLOG SITE" type="application/atom+xml">
   
@@ -201,7 +201,7 @@
 <h3 id="A-Law-Compander"><a href="#A-Law-Compander" class="headerlink" title="A-Law Compander"></a>A-Law Compander</h3><p>A-law 是 CCITT 推荐的全欧洲使用的压缩标准。将线性采样值限制为12个量级位，A-law 压缩由公式1定义，其中A为压缩参数(欧洲为A=87.7)， x 为需要压缩的归一化整数。</p>
 <p>$$<br>F(x)=\left[\begin{array}{ll}<br>\frac{A^{<em>}|x|}{1+\ln \mid A} &amp; 0 \leqslant|x|&lt;\frac{1}{A} \<br>\frac{\operatorname{sgn}(x)^{</em>}(1+\ln (A|x|))}{1+\ln (A)} &amp; \frac{1}{A} \leqslant|x| \leqslant 1<br>\end{array}\right. \<br>\text { 公式1, A-Law 定义 }<br>$$</p>
 <p>表1给出了 A-law 编码表。线性输入数据的符号位从表中省略。如果输入样本为负，则8位代码的符号位(S)设置为1，如果输入样本为正，则设置为0。</p>
-<p><img src="2021/05/22/ALaw_and_MuLaw_Companding/image-20210522122732407.png" alt="image-20210522122732407"></p>
+<p><img src="./image-20210522122732407.png" alt="image-20210522122732407"></p>
 <p>通过表中定义的逻辑对输入数据进行编码后，对8位码应用翻转模式，以增加传输线上的传输密度，从而提高硬件性能。翻转模式是通过用 0x55 异或处理8位码来实现的。</p>
 <p>解码 A-law 编码的数据本质上是一个反向编码步骤的问题。表2给出了翻转模式后应用的A-law解码表。编码过程中丢弃的最低有效位近似于间隔的中值。这在输出部分中以 <code>1..0</code> 形式尾随在D位后。</p>
 <p><img src="2021/05/22/ALaw_and_MuLaw_Companding/image-20210522123228276.png" alt="image-20210522123228276"></p>
