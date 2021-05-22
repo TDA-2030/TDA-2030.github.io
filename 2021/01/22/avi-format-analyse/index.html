@@ -186,21 +186,25 @@
       
         <p>最近突发奇想研究了一下视频播放，听说 AVI 视频文件较简单，找到了一篇古老的英文文档，翻译后供自己看。</p>
 <a id="more"></a>
-
 <p>原文链接：<a href="https://web.archive.org/web/20170411001412/http://www.alexander-noe.com/video/documentation/avi.pdf" target="_blank" rel="noopener">https://web.archive.org/web/20170411001412/http://www.alexander-noe.com/video/documentation/avi.pdf</a></p>
-<h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1 introduction"></a>1 introduction</h2><h3 id="1-1-为什么要这一个AVI文件格式文档"><a href="#1-1-为什么要这一个AVI文件格式文档" class="headerlink" title="1.1 为什么要这一个AVI文件格式文档"></a>1.1 为什么要这一个AVI文件格式文档</h3><p>​    尽管AVI文件格式已经存在了10多年，但是没有一个文档不仅描述了格式本身，而且还说明了有缺陷的 demuxer 和 decoder 的问题，以及如何规避这些问题。</p>
-<p>​    本文档的目的不仅仅是解释AVI格式，就像文章中定义的那样，而是在使用有缺陷的 muxers、demuxer、decompressor 时如何使用它。</p>
-<h3 id="1-2-基本数据结构"><a href="#1-2-基本数据结构" class="headerlink" title="1.2 基本数据结构"></a>1.2 基本数据结构</h3><h4 id="1-2-1-Chunks"><a href="#1-2-1-Chunks" class="headerlink" title="1.2.1 Chunks"></a>1.2.1 Chunks</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    DWORD dwFourCC</span><br><span class="line">    DWORD dwSize</span><br><span class="line">    BYTE  data[dwSize] <span class="comment">// contains headers or video/audio data</span></span><br><span class="line">&#125;CHUNK;</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-2-2-Lists"><a href="#1-2-2-Lists" class="headerlink" title="1.2.2 Lists"></a>1.2.2 Lists</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    DWORD dwList</span><br><span class="line">    DWORD dwSize</span><br><span class="line">    DWORD dwFourCC</span><br><span class="line">    BYTE  data[dwSize<span class="number">-4</span>] <span class="comment">//contains Lists and Chunks</span></span><br><span class="line">&#125;LIST;</span><br></pre></td></tr></table></figure>
-
+<h2 id="1-introduction"><a class="markdownIt-Anchor" href="#1-introduction"></a> 1 introduction</h2>
+<h3 id="11-为什么要这一个avi文件格式文档"><a class="markdownIt-Anchor" href="#11-为什么要这一个avi文件格式文档"></a> 1.1 为什么要这一个AVI文件格式文档</h3>
+<p>​	尽管AVI文件格式已经存在了10多年，但是没有一个文档不仅描述了格式本身，而且还说明了有缺陷的 demuxer 和 decoder 的问题，以及如何规避这些问题。</p>
+<p>​	本文档的目的不仅仅是解释AVI格式，就像文章中定义的那样，而是在使用有缺陷的 muxers、demuxer、decompressor 时如何使用它。</p>
+<h3 id="12-基本数据结构"><a class="markdownIt-Anchor" href="#12-基本数据结构"></a> 1.2 基本数据结构</h3>
+<h4 id="121-chunks"><a class="markdownIt-Anchor" href="#121-chunks"></a> 1.2.1 Chunks</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    DWORD dwFourCC</span><br><span class="line">    DWORD dwSize</span><br><span class="line">    BYTE  data[dwSize] <span class="comment">// contains headers or video/audio data</span></span><br><span class="line">&#125;CHUNK;</span><br></pre></td></tr></table></figure>
+<h4 id="122-lists"><a class="markdownIt-Anchor" href="#122-lists"></a> 1.2.2 Lists</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    DWORD dwList</span><br><span class="line">    DWORD dwSize</span><br><span class="line">    DWORD dwFourCC</span><br><span class="line">    BYTE  data[dwSize<span class="number">-4</span>] <span class="comment">//contains Lists and Chunks</span></span><br><span class="line">&#125;LIST;</span><br></pre></td></tr></table></figure>
 <p>一个 chunk 包含视频、音频或字幕数据，使用 dwFourCC 中包含的 2 个十六进制数字指定流编号，2个字母指定数据类型（dc = 视频，wb = 音频， tx = 文本）。dwFourCC 和 dwSize 在两种结构中的意思相同，dwFourCC 描述了 chunk 的类型（例如 “header list” 是 “hdrl”），dwSize 是 chunk 或 list 的大小，包括了 dwSize 后的第一个字节。在 list 结构中，dwSize 包括了 dwFourCC  的 4 字节。</p>
 <p>dwList 的值可以是 “RIFF” (RIFF-List) 或 “LIST” (List)。</p>
 <p>注：FourCC : four character code</p>
-<h3 id="1-3-AVI-文件类型"><a href="#1-3-AVI-文件类型" class="headerlink" title="1.3 AVI 文件类型"></a>1.3 AVI 文件类型</h3><p>通常有三种类型的 AVI 文件：</p>
+<h3 id="13-avi-文件类型"><a class="markdownIt-Anchor" href="#13-avi-文件类型"></a> 1.3 AVI 文件类型</h3>
+<p>通常有三种类型的 AVI 文件：</p>
 <ul>
 <li><strong>AVI 1.0</strong> 原始的，老的 AVI 文件</li>
-<li><strong>Open-DML</strong> 一个 AVI 文件格式的扩展，在 1996.2.28 制定了 V1.02 版本，最重要的改进是：<ul>
+<li><strong>Open-DML</strong> 一个 AVI 文件格式的扩展，在 1996.2.28 制定了 V1.02 版本，最重要的改进是：
+<ul>
 <li>几乎不限制文件大小（超过了 NTFS 允许的大小）</li>
 <li>开销减少 33%</li>
 </ul>
@@ -208,57 +212,68 @@
 <li><strong>Hybride-Files</strong> Open-DML 文件为了兼容性，包含了一个额外的索引。这不是一个官方的词，但是它很好的描述了文件类型。仅包含一个 RIFF List 的 Hybride files 可以视为任意一种文件类型。</li>
 </ul>
 <p>本文档描述了 Open-DML 1.02 文件格式特性的子集，以及一些附加功能(“hacks”)。如果安装了适当的(免费可用的)过滤器，这些附加功能将在普通播放器中使用。在 Open-DML 中可用，但在 AVI 1.0 中不可用的特性，将被指示为仅 Open-DML。</p>
-<h2 id="2-AVI-文件的布局"><a href="#2-AVI-文件的布局" class="headerlink" title="2 AVI 文件的布局"></a>2 AVI 文件的布局</h2><p>当一个 RIFF-List 的 dwFourCC 是 “AVI ” 时被称为 RIFF-AVI-List，当一个 RIFF-List 的 dwFourCC 是 “AVIX” 时被称为 RIFF-AVIX-List。</p>
+<h2 id="2-avi-文件的布局"><a class="markdownIt-Anchor" href="#2-avi-文件的布局"></a> 2 AVI 文件的布局</h2>
+<p>当一个 RIFF-List 的 dwFourCC 是 “AVI ” 时被称为 RIFF-AVI-List，当一个 RIFF-List 的 dwFourCC 是 “AVIX” 时被称为 RIFF-AVIX-List。</p>
 <p>每一个 AVI 文件都有如下的布局：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RIFF AVI      &#x2F;&#x2F; mandatory</span><br><span class="line">&#123; RIFF AVIX &#125; &#x2F;&#x2F; only for Open-DML files</span><br></pre></td></tr></table></figure>
-
 <p>这些 List 的大小不是 uint32_t 的最大值 4GB，而是：</p>
 <ul>
 <li>对于 AVI 1.0：size(RIFF-AVI) &lt; 2GB</li>
-<li>对于 Open-DML：<ul>
+<li>对于 Open-DML：
+<ul>
 <li>size(RIFF-AVI) &lt; 1GB (某些 muxing 软件是 2GB)</li>
 <li>size(RIFF-AVIX) &lt; 2GB</li>
 </ul>
 </li>
 </ul>
 <p>如果没有找到 Legacy index，Windows XP 总是把第一个 RIFF AVI List 整个读取，这个 Legacy index 会导致一定的开销，所以推荐尽可能创建一个小的 RIFF AVI List。</p>
-<h3 id="2-1-Header"><a href="#2-1-Header" class="headerlink" title="2.1 Header"></a>2.1 Header</h3><p>AVI 文件的 Header 看起来是这样：</p>
+<h3 id="21-header"><a class="markdownIt-Anchor" href="#21-header"></a> 2.1 Header</h3>
+<p>AVI 文件的 Header 看起来是这样：</p>
 <img src="/2021/01/22/avi-format-analyse/header.jpg" alt="header" width="700" />
-
 <p>接下来说明这些 header 和 chunk 的意思。</p>
-<h4 id="2-1-1-MainAVIHeader-avih"><a href="#2-1-1-MainAVIHeader-avih" class="headerlink" title="2.1.1 MainAVIHeader(avih)"></a>2.1.1 MainAVIHeader(avih)</h4><p>这个结构定义如下：</p>
+<h4 id="211-mainaviheaderavih"><a class="markdownIt-Anchor" href="#211-mainaviheaderavih"></a> 2.1.1 MainAVIHeader(avih)</h4>
+<p>这个结构定义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD  dwMicroSecPerFrame;   <span class="comment">//  frame  display  rate  (or  0)</span></span><br><span class="line">    DWORD  dwMaxBytesPerSec;     <span class="comment">//  max.  transfer  rate</span></span><br><span class="line">    DWORD  dwPaddingGranularity; <span class="comment">//  pad  to  multiples  of  this size;</span></span><br><span class="line">    DWORD  dwFlags;              <span class="comment">//  the  ever-present  flags</span></span><br><span class="line">    DWORD  dwTotalFrames;        <span class="comment">//  #  frames  in  file</span></span><br><span class="line">    DWORD  dwInitialFrames;</span><br><span class="line">    DWORD  dwStreams;</span><br><span class="line">    DWORD  dwSuggestedBufferSize;</span><br><span class="line">    DWORD  dwWidth;</span><br><span class="line">    DWORD  dwHeight;</span><br><span class="line">    DWORD  dwReserved[<span class="number">4</span>];</span><br><span class="line">&#125;  MainAVIHeader;</span><br></pre></td></tr></table></figure>
-
 <p>不幸的是，这些值没有它们的名字看上去的那种意思。</p>
 <ul>
-<li><p>dwMicroSecPerFrame</p>
+<li>
+<p>dwMicroSecPerFrame</p>
 <p>包含一个视频帧的时间，以 us 为时间。这个值可以忽略，但是任何 AVI 文件都应该正确的填入该值。<strong>重要</strong>：一些坏的软件将帧率写入到 stream header 而不是 dwMicroSecPerFrame 。因此 dwMicroSecPerFrame 是不可信的。</p>
 </li>
-<li><p>dwMaxBytesPerSec</p>
+<li>
+<p>dwMaxBytesPerSec</p>
 <p>文件的最大数据率。这个也不是不重要，只是不应该过高的估计重要性</p>
 </li>
-<li><p>dwPaddingGranularity</p>
+<li>
+<p>dwPaddingGranularity</p>
 <p>文件被填充为这个的倍数</p>
 </li>
-<li><p>dwFlags</p>
+<li>
+<p>dwFlags</p>
 <p>see below</p>
 </li>
-<li><p>dwTotalFrames</p>
+<li>
+<p>dwTotalFrames</p>
 <p>包含 RIFF-AVI List 中视频的帧数（在 RIFF-AVIX-List 中，不是整个文件的帧数。一些声称可以处理AVI文件的工具甚至会假设这一点，但它肯定违反了opendml文件格式规范。）鉴于一些 AVI 文件 muxer 在这写入错误的值，这个值也变得不可信。</p>
 </li>
-<li><p>dwInitialFrames</p>
+<li>
+<p>dwInitialFrames</p>
 <p>忽略这个</p>
 </li>
-<li><p>dwStreams</p>
+<li>
+<p>dwStreams</p>
 <p>文件中 stream 的数量</p>
 </li>
-<li><p>dwSuggestedBufferSize</p>
+<li>
+<p>dwSuggestedBufferSize</p>
 <p>装载这个文件中chunk的buffer大小。这个值的可信度不可高估</p>
 </li>
-<li><p>dwWidth</p>
+<li>
+<p>dwWidth</p>
 <p>视频流的宽度</p>
 </li>
-<li><p>dwHeight</p>
+<li>
+<p>dwHeight</p>
 <p>视频流的高度</p>
 </li>
 </ul>
@@ -271,47 +286,66 @@
 <li>AVIF_COPYRIGHTED ： 忽略</li>
 <li>AVIF_TRUSTCKTYPE ：只有 Open-DML 才有，这个 flag 表明了在 index 中的关键帧标记是可信的。如果在 Open-DML 文件中没有这个flag，则关键帧标志可能有缺陷，但技术上不会使文件无效。</li>
 </ul>
-<h4 id="2-1-2-Stream-Header-list-strl"><a href="#2-1-2-Stream-Header-list-strl" class="headerlink" title="2.1.2 Stream Header list (strl)"></a>2.1.2 Stream Header list (strl)</h4><p>每一个 stream 都有一个 strl 。如果在 hdrl 中 strl 的数量与 MainAVIHeader 中 streams 字段的值不相等，则应该报一个 fatal error。</p>
-<h4 id="2-1-3-stream-header-chunk"><a href="#2-1-3-stream-header-chunk" class="headerlink" title="2.1.3 stream header chunk"></a>2.1.3 stream header chunk</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    FOURCC  fccType;</span><br><span class="line">    FOURCC  fccHandler;</span><br><span class="line">    DWORD   dwFlags;</span><br><span class="line">    WORD    wPriority;</span><br><span class="line">    WORD    wLanguage;</span><br><span class="line">    DWORD   dwInitialFrames;</span><br><span class="line">    DWORD   dwScale;</span><br><span class="line">    DWORD   dwRate; <span class="comment">/* dwRate / dwScale = fps */</span></span><br><span class="line">    DWORD   dwStart;</span><br><span class="line">    DWORD   dwLength;        <span class="comment">/* In units above... */</span></span><br><span class="line">    DWORD   dwSuggestedBufferSize;</span><br><span class="line">    DWORD   dwQuality;</span><br><span class="line">    DWORD   dwSampleSize;</span><br><span class="line">    RECT    rcFrame;</span><br><span class="line">&#125; AVIStreamHeader;</span><br></pre></td></tr></table></figure>
-
+<h4 id="212-stream-header-list-strl"><a class="markdownIt-Anchor" href="#212-stream-header-list-strl"></a> 2.1.2 Stream Header list (strl)</h4>
+<p>每一个 stream 都有一个 strl 。如果在 hdrl 中 strl 的数量与 MainAVIHeader 中 streams 字段的值不相等，则应该报一个 fatal error。</p>
+<h4 id="213-stream-header-chunk"><a class="markdownIt-Anchor" href="#213-stream-header-chunk"></a> 2.1.3 stream header chunk</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    FOURCC  fccType;</span><br><span class="line">    FOURCC  fccHandler;</span><br><span class="line">    DWORD   dwFlags;</span><br><span class="line">    WORD    wPriority;</span><br><span class="line">    WORD    wLanguage;</span><br><span class="line">    DWORD   dwInitialFrames;</span><br><span class="line">    DWORD   dwScale;</span><br><span class="line">    DWORD   dwRate; <span class="comment">/* dwRate / dwScale = fps */</span></span><br><span class="line">    DWORD   dwStart;</span><br><span class="line">    DWORD   dwLength;        <span class="comment">/* In units above... */</span></span><br><span class="line">    DWORD   dwSuggestedBufferSize;</span><br><span class="line">    DWORD   dwQuality;</span><br><span class="line">    DWORD   dwSampleSize;</span><br><span class="line">    RECT    rcFrame;</span><br><span class="line">&#125; AVIStreamHeader;</span><br></pre></td></tr></table></figure>
 <p>同样的，这些值的意思也不总是明显的。</p>
 <ul>
-<li><p>fccType 可以是 <code>vids</code> ， <code>auds</code> ， <code>txts</code> 依次代表 视频流，音频流， 字幕流</p>
+<li>
+<p>fccType 可以是 <code>vids</code> ， <code>auds</code> ， <code>txts</code> 依次代表 视频流，音频流， 字幕流</p>
 </li>
-<li><p>fccHandler ：使用的编码器</p>
+<li>
+<p>fccHandler ：使用的编码器</p>
 </li>
-<li><p>dwFlags：</p>
-<ul>
-<li>AVISF_DISABLED ： stream 默认处于未激活状态</li>
-<li>AVISF_VIDEO_PALCHANGES ： stream 是一个使用调色板的视频流，并且调色板在播放时会改变。</li>
+<li>
+<p>dwFlags：</p>
+</li>
+<li>
+<p>AVISF_DISABLED ： stream 默认处于未激活状态</p>
+</li>
+<li>
+<p>AVISF_VIDEO_PALCHANGES ： stream 是一个使用调色板的视频流，并且调色板在播放时会改变。</p>
+</li>
+<li>
+<p>dwInitialFrames ：文件中存在的流的第一个 chunk 的编号。</p>
+</li>
+<li>
+<p>dwRate / dwScale = samples / second(audio) or frames  / second(video). dwScale 和 dwRate 应该互为素数，测试表明，使用10000000/400000 而不是 25/1 将导致某些硬件 MPEG4 播放器不工作。</p>
+</li>
+<li>
+<p>dwStart ：stream的开始时间。如果是VBR音频，这个值指示了 stream 开始前的静音帧数量</p>
+</li>
+<li>
+<p>dwLength ：以dwRate和dwScale中定义的单位表示的流大小</p>
+</li>
+<li>
+<p>dwSuggestedBufferSize ：用来存储 stream 块的缓存大小。可以是0（这样应用程序必须靠猜），但是不应该是0，因为 Microsoft 的 AVI splitter 不能正确处理这种情况（例如 Open-DML 文件中的 MP3-CBR）</p>
+</li>
+<li>
+<p>dwQuality ：指示 stream 的质量，不重要</p>
+</li>
+<li>
+<p>dwSampleSize ：stream 中一个 atom 的字节数（不应进一步拆分）</p>
+</li>
 </ul>
-</li>
-<li><p>dwInitialFrames ：文件中存在的流的第一个 chunk 的编号。</p>
-</li>
-<li><p>dwRate / dwScale = samples / second(audio) or frames  / second(video). dwScale 和 dwRate 应该互为素数，测试表明，使用10000000/400000 而不是 25/1 将导致某些硬件 MPEG4 播放器不工作。</p>
-</li>
-<li><p>dwStart ：stream的开始时间。如果是VBR音频，这个值指示了 stream 开始前的静音帧数量</p>
-</li>
-<li><p>dwLength ：以dwRate和dwScale中定义的单位表示的流大小</p>
-</li>
-<li><p>dwSuggestedBufferSize ：用来存储 stream 块的缓存大小。可以是0（这样应用程序必须靠猜），但是不应该是0，因为 Microsoft 的 AVI splitter 不能正确处理这种情况（例如 Open-DML 文件中的 MP3-CBR）</p>
-</li>
-<li><p>dwQuality ：指示 stream 的质量，不重要</p>
-</li>
-<li><p>dwSampleSize ：stream 中一个 atom 的字节数（不应进一步拆分）</p>
-</li>
-</ul>
-<h4 id="2-1-4-stream-header-list-strf"><a href="#2-1-4-stream-header-list-strf" class="headerlink" title="2.1.4 stream header list (strf)"></a>2.1.4 stream header list (strf)</h4><p>strf 块的结构依赖于媒体的类型。视频流使用 BITMAPINFOHEADER 结构，音频流使用 WAVEFORMATEX 结构</p>
-<h4 id="2-1-5-stream-header-list-index"><a href="#2-1-5-stream-header-list-index" class="headerlink" title="2.1.5 stream header list (index)"></a>2.1.5 stream header list (index)</h4><p>这个块包含更高级别的索引，见第3章</p>
-<h4 id="2-1-6-stream-header-list-strn"><a href="#2-1-6-stream-header-list-strn" class="headerlink" title="2.1.6 stream header list (strn)"></a>2.1.6 stream header list (strn)</h4><p>这个块包含流的名字，该名字应该仅使用简单的 ASCII，尤其不能是UTF-8</p>
-<h2 id="3-AVI-indexes"><a href="#3-AVI-indexes" class="headerlink" title="3 AVI indexes"></a>3 AVI indexes</h2><h3 id="3-1-旧风格的索引"><a href="#3-1-旧风格的索引" class="headerlink" title="3.1 旧风格的索引"></a>3.1 旧风格的索引</h3><p>所描述的索引是你将在 AVI1.0 文件中找到的索引。它放在 RIFF AVI List 的 movi List 之后。idx1块的数据部分具有以下布局：</p>
+<h4 id="214-stream-header-list-strf"><a class="markdownIt-Anchor" href="#214-stream-header-list-strf"></a> 2.1.4 stream header list (strf)</h4>
+<p>strf 块的结构依赖于媒体的类型。视频流使用 BITMAPINFOHEADER 结构，音频流使用 WAVEFORMATEX 结构</p>
+<h4 id="215-stream-header-list-index"><a class="markdownIt-Anchor" href="#215-stream-header-list-index"></a> 2.1.5 stream header list (index)</h4>
+<p>这个块包含更高级别的索引，见第3章</p>
+<h4 id="216-stream-header-list-strn"><a class="markdownIt-Anchor" href="#216-stream-header-list-strn"></a> 2.1.6 stream header list (strn)</h4>
+<p>这个块包含流的名字，该名字应该仅使用简单的 ASCII，尤其不能是UTF-8</p>
+<h2 id="3-avi-indexes"><a class="markdownIt-Anchor" href="#3-avi-indexes"></a> 3 AVI indexes</h2>
+<h3 id="31-旧风格的索引"><a class="markdownIt-Anchor" href="#31-旧风格的索引"></a> 3.1 旧风格的索引</h3>
+<p>所描述的索引是你将在 AVI1.0 文件中找到的索引。它放在 RIFF AVI List 的 movi List 之后。idx1块的数据部分具有以下布局：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">AVIINDEXENTRY index_entry[n]</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD      ckid;</span><br><span class="line">    DWORD      dwFlags;</span><br><span class="line">    DWORD      dwChunkOffset;</span><br><span class="line">    DWORD      dwChunkLength;</span><br><span class="line">&#125;AVIINDEXENTRY;</span><br></pre></td></tr></table></figure>
-
 <p>这些值的意思如下：</p>
 <ul>
-<li><p>ckid ：规定与文件中数据块的 chunkID 相对应的 FourCC</p>
+<li>
+<p>ckid ：规定与文件中数据块的 chunkID 相对应的 FourCC</p>
 </li>
-<li><p>dwFlags ：</p>
+<li>
+<p>dwFlags ：</p>
 <p>以下flag被定义：</p>
 <ul>
 <li>AVIIF_KEYFRAME ：指向的块是一个关键帧</li>
@@ -327,9 +361,9 @@
 <li>dwChunkOffset ：包含相应块的头位置。<strong>警告</strong>：这可以是文件的绝对位置，也可以是相对 movi 标识符的相对位置，AVI 文件解析器必须能处理这两种情况。</li>
 <li>dwChunkLength ： 对应块的字节长度</li>
 </ul>
-<h3 id="3-2-Open-DML-Index"><a href="#3-2-Open-DML-Index" class="headerlink" title="3.2 Open-DML Index"></a>3.2 Open-DML Index</h3><p>Open-DML 索引块的通常结构如下：</p>
+<h3 id="32-open-dml-index"><a class="markdownIt-Anchor" href="#32-open-dml-index"></a> 3.2 Open-DML Index</h3>
+<p>Open-DML 索引块的通常结构如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">aviindex_chunk</span> &#123;</span></span><br><span class="line">    FOURCC fcc;</span><br><span class="line">    DWORD  cb;</span><br><span class="line">    WORD   wLongsPerEntry;</span><br><span class="line">    BYTE   bIndexSubType;</span><br><span class="line">    BYTE   bIndexType;</span><br><span class="line">    DWORD  nEntriesInUse;</span><br><span class="line">    DWORD  dwChunkId;</span><br><span class="line">    DWORD  dwReserved[<span class="number">3</span>];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">aviindex_entry</span> &#123;</span></span><br><span class="line">        DWORD  adw[wLongsPerEntry];</span><br><span class="line">    &#125; aIndex [ ];</span><br><span class="line">&#125; AVIINDEXCHUNK;</span><br></pre></td></tr></table></figure>
-
 
       
       <!-- 在此处添加代码-->

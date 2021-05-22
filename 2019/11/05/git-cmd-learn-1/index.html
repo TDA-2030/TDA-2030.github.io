@@ -185,15 +185,16 @@
         <p>版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统，而 git 是个应用广泛的版本控制工具。</p>
 <p>推荐参考书 <a href="https://git-scm.com/book/zh/v2" target="_blank" rel="noopener">Pro Git book</a></p>
 <a id="more"></a>
-
-<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><table>
+<h2 id="常用命令"><a class="markdownIt-Anchor" href="#常用命令"></a> 常用命令</h2>
+<table>
 <thead>
 <tr>
 <th>描述</th>
 <th>命令</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>添加文件到暂存区</td>
 <td>git add file 或者git add .</td>
 </tr>
@@ -231,7 +232,7 @@
 </tr>
 <tr>
 <td>撤销暂存区和工作区，回到解放前</td>
-<td>git reset –hard</td>
+<td>git reset --hard</td>
 </tr>
 <tr>
 <td>从 url 克隆一个仓库</td>
@@ -249,20 +250,23 @@
 <td>从远程仓库更新数据并合并到本地分支</td>
 <td>git pull</td>
 </tr>
-</tbody></table>
-<h2 id="进阶指令"><a href="#进阶指令" class="headerlink" title="进阶指令"></a>进阶指令</h2><table>
+</tbody>
+</table>
+<h2 id="进阶指令"><a class="markdownIt-Anchor" href="#进阶指令"></a> 进阶指令</h2>
+<table>
 <thead>
 <tr>
 <th>命令</th>
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>git bisect</td>
 <td>二分法查找引入错误的提交</td>
 </tr>
 <tr>
-<td>git commit –amend</td>
+<td>git commit --amend</td>
 <td>修改最近一次提交的提交信息</td>
 </tr>
 <tr>
@@ -274,7 +278,7 @@
 <td>将当前分支变基到 A 分支</td>
 </tr>
 <tr>
-<td>git cherry-pick id1^..id2</td>
+<td>git cherry-pick id1^…id2</td>
 <td>将id1到id2的所有commit复制到当前HEAD</td>
 </tr>
 <tr>
@@ -286,15 +290,17 @@
 <td>应用补丁，不会将commit message等打上去</td>
 </tr>
 <tr>
-<td>git apply –check xxx.patch</td>
+<td>git apply --check xxx.patch</td>
 <td>检查补丁</td>
 </tr>
 <tr>
 <td>git am xx.patch</td>
 <td>应用补丁，直接将patch的所有信息打上去</td>
 </tr>
-</tbody></table>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://ruanyifeng.com/blog/2018/12/git-bisect.html" target="_blank" rel="noopener">https://ruanyifeng.com/blog/2018/12/git-bisect.html</a></p>
+</tbody>
+</table>
+<h2 id="参考资料"><a class="markdownIt-Anchor" href="#参考资料"></a> 参考资料</h2>
+<p><a href="https://ruanyifeng.com/blog/2018/12/git-bisect.html" target="_blank" rel="noopener">https://ruanyifeng.com/blog/2018/12/git-bisect.html</a></p>
 <p><a href="http://www.worldhello.net/gotgithub/index.html" target="_blank" rel="noopener">http://www.worldhello.net/gotgithub/index.html</a></p>
 <p><a href="https://git-scm.com/book/zh/v2" target="_blank" rel="noopener">https://git-scm.com/book/zh/v2</a></p>
 
